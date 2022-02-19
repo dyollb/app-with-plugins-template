@@ -43,9 +43,3 @@ else()
 
 endif()
 
-verify_bundle_prerequisites("$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/myapp@CMAKE_EXECUTABLE_SUFFIX@" VERIFY_RESULT VERIFY_INFO)
-if(VERIFY_RESULT)
-    message(STATUS "Passed verification: ${VERIFY_INFO}")
-else()
-    message(FATAL_ERROR "Failed verification: ${VERIFY_INFO}")
-endif()

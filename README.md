@@ -1,4 +1,7 @@
-# This is a sandbox project to experiment with creating relocatable applications (with plugins) on Windows, MacOS and Linux using CMake.
+# This sandbox project demonstrates how to create relocatable C++ applications (with plugins) on Windows, MacOS and Linux using CMake.
+[![Build Actions Status](https://github.com/dyollb/bundle-app-sandbox/C/C++%20CI/badge.svg)](https://github.com/dyollb/bundle-app-sandbox/actions)
+
+Bundling C++ applications on different platform can be tricky. While there are several examples of how to use CMake's BundleUtilities for simple executables, I found it difficult to apply this to executables with plugins, in particular on MacOS. After reading about the topic and searching for best practice / reference projects, I decided to create this little C++ template project.
 
 References:
 
