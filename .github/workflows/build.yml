@@ -51,7 +51,7 @@ jobs:
         # OPTIONAL: Specify a platform version
         platform_version: ${{ matrix.config.platform_version }}
         # OPTIONAL: Specify a toolset
-        toolset: ${{ matrix.config.toolset }}
+        #toolset: ${{ matrix.config.toolset }}
 
     - name: Install build-kit on windows
       if: startsWith(matrix.config.name, 'windows')
