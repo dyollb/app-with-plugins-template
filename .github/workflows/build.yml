@@ -1,0 +1,71 @@
+name: C/C++ CI
+
+on:
+  workflow_dispatch:
+  push:
+      branches: [ main ]
+  pull_request:
+      branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        config:
+        - {
+          name: "windows-latest",
+          os: windows-latest,
+          generators: "Visual Studio 16 2019"
+          }
+        - {
+          name: "ubuntu-latest",
+          os: ubuntu-latest,
+          cc: "gcc",
+          cxx: "g++",
+          generators: "Ninja"
+          }
+        - {
+          name: "macos-latest",
+          os: macos-latest,
+          cc: "clang",
+          cxx: "clang++",
+          generators: "Ninja"
+          }
+
+    steps:
+    - uses: actions/checkout@v2
+  
+    - name: Install dependencies on windows
+      if: startsWith(matrix.config.name, 'windows')
+      run: |
+        choco install boost cmake ninja
+        cmake --version
+        ninja --version
+
+    - name: Install dependencies on ubuntu
+      if: startsWith(matrix.config.name, 'ubuntu')
+      run: |
+        sudo apt-get update
+        sudo apt-get install boost cmake ninja-build
+        cmake --version
+        ninja --version
+        gcc --version
+  
+    - name: Install dependencies on macos
+      if: startsWith(matrix.config.name, 'macos')
+      run: |
+        brew install boost cmake ninja
+        cmake --version
+        ninja --version
+
+    - name: configure
+      run: cmake -S . -B CIBuild -G "${{ matrix.config.generators }}"
+
+    - name: make
+      run: cmake --build CIBuild -j2
+
+    - name: make test
+      run: |
+        cd CIBuild
+        ctest -V
