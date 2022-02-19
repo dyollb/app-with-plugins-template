@@ -15,23 +15,23 @@ jobs:
       matrix:
         config:
         - {
-          name: "windows-latest",
-          os: windows-latest,
+          name: "windows 2019",
+          os: windows-2019,
           generators: "Visual Studio 16 2019",
           toolset: "msvc",
           platform_version: "2019"
           }
         - {
-          name: "ubuntu-latest",
-          os: ubuntu-20.04,
+          name: "ubuntu-18.04",
+          os: ubuntu-18.04,
           cc: "gcc",
           cxx: "g++",
           generators: "Ninja",
           toolset: "gcc",
-          platform_version: "20.04"
+          platform_version: "18.04"
           }
         - {
-          name: "macos-latest",
+          name: "macos-11",
           os: macos-11,
           cc: "clang",
           cxx: "clang++",
@@ -72,7 +72,6 @@ jobs:
     - name: Install build-kit on macos
       if: startsWith(matrix.config.name, 'macos')
       run: |
-        brew install icu4c
         brew install cmake ninja
         cmake --version
         ninja --version
