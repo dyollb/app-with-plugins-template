@@ -62,7 +62,7 @@ jobs:
         ninja --version
 
     - name: configure
-      run: cmake -S . -B CIBuild -G "${{ matrix.config.generators }}"
+      run: cmake -S src -B CIBuild -G "${{ matrix.config.generators }}"
 
     - name: make
       run: cmake --build CIBuild -j2
