@@ -1,0 +1,87 @@
+name: C/C++ CI
+
+on:
+  workflow_dispatch:
+  push:
+      branches: [ main ]
+  pull_request:
+      branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+        - {
+          name: "windows 2019",
+          os: windows-2019,
+          generators: "Visual Studio 16 2019",
+          toolset: "msvc",
+          platform_version: "2019"
+          }
+        - {
+          name: "ubuntu-20.04",
+          os: ubuntu-20.04,
+          cc: "gcc",
+          cxx: "g++",
+          generators: "Ninja",
+          toolset: "gcc",
+          platform_version: "20.04"
+          }
+        - {
+          name: "macos-11",
+          os: macos-11,
+          cc: "clang",
+          cxx: "clang++",
+          generators: "Ninja",
+          toolset: "clang",
+          platform_version: "11"
+          }
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install boost
+      uses: MarkusJx/install-boost@v2.1.0
+      id: install-boost
+      with:
+        boost_version: 1.78.0
+        platform_version: ${{ matrix.config.platform_version }}
+        toolset: ${{ matrix.config.toolset }}
+
+    - name: Install build-kit on windows
+      if: startsWith(matrix.config.name, 'windows')
+      run: |
+        choco install cmake
+        cmake --version
+
+    - name: Install build-kit on ubuntu
+      if: startsWith(matrix.config.name, 'ubuntu')
+      run: |
+        sudo apt-get update
+        sudo apt-get install cmake ninja-build
+        cmake --version
+        ninja --version
+        gcc --version
+  
+    - name: Install build-kit on macos
+      if: startsWith(matrix.config.name, 'macos')
+      run: |
+        brew install cmake ninja
+        cmake --version
+        ninja --version
+
+    - name: configure
+      run: cmake -S src -B CIBuild -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
+      env:
+        BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+
+    - name: make
+      run: cmake --build CIBuild -j2 --config Release
+
+    - name: make test
+      run: |
+        cd CIBuild
+        ctest -V -C Release
