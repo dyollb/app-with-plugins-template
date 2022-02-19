@@ -17,52 +17,70 @@ jobs:
         - {
           name: "windows-latest",
           os: windows-latest,
-          generators: "Visual Studio 16 2019"
+          generators: "Visual Studio 16 2019",
+          toolset: "msvc",
+          platform_version: "2019"
           }
         - {
           name: "ubuntu-latest",
-          os: ubuntu-latest,
+          os: ubuntu-20.04,
           cc: "gcc",
           cxx: "g++",
-          generators: "Ninja"
+          generators: "Ninja",
+          toolset: "gcc",
+          platform_version: "20.04"
           }
         - {
           name: "macos-latest",
-          os: macos-latest,
+          os: macos-11,
           cc: "clang",
           cxx: "clang++",
-          generators: "Ninja"
+          generators: "Ninja",
+          toolset: "clang",
+          platform_version: "11"
           }
 
     steps:
     - uses: actions/checkout@v2
-  
-    - name: Install dependencies on windows
+
+    - name: Install boost
+      uses: MarkusJx/install-boost@v2.1.0
+      id: install-boost
+      with:
+        boost_version: 1.73.0
+        # OPTIONAL: Specify a platform version
+        platform_version: ${{ matrix.config.platform_version }}
+        # OPTIONAL: Specify a toolset
+        toolset: ${{ matrix.config.toolset }}
+
+    - name: Install build-kit on windows
       if: startsWith(matrix.config.name, 'windows')
       run: |
-        choco install boost-msvc-14.1 cmake ninja
+        choco install cmake ninja
         cmake --version
         ninja --version
 
-    - name: Install dependencies on ubuntu
+    - name: Install build-kit on ubuntu
       if: startsWith(matrix.config.name, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install libboost-filesystem-dev cmake ninja-build
+        sudo apt-get install cmake ninja-build
         cmake --version
         ninja --version
         gcc --version
   
-    - name: Install dependencies on macos
+    - name: Install build-kit on macos
       if: startsWith(matrix.config.name, 'macos')
       run: |
         brew install icu4c
-        brew install boost cmake ninja
+        brew install cmake ninja
         cmake --version
         ninja --version
 
     - name: configure
       run: cmake -S src -B CIBuild -G "${{ matrix.config.generators }}"
+      env:
+        BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
     - name: make
       run: cmake --build CIBuild -j2

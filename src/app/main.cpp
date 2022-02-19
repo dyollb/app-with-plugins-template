@@ -8,7 +8,6 @@
 int main(int argc, char** argv)
 {
     auto current_dir = std::filesystem::absolute(std::filesystem::path(argv[0])).parent_path();
-    LoadPlugins(current_dir);
 
 #ifdef __APPLE__
     // plugins are installed into Frameworks directory
@@ -18,7 +17,9 @@ int main(int argc, char** argv)
         // we are in build directory
         plugin_dir = current_dir / "../../../";
     }
-    LoadPlugins(plugin_dir);
+    LoadPlugins(plugin_dir.string());
+#else
+    LoadPlugins(current_dir.string());
 #endif
 
     auto plugins = PluginRegistry::RegisteredPlugins();
