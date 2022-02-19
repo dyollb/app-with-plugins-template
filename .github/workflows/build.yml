@@ -40,7 +40,7 @@ jobs:
     - name: Install dependencies on windows
       if: startsWith(matrix.config.name, 'windows')
       run: |
-        choco install boost cmake ninja
+        choco install boost-msvc-14.1 cmake ninja
         cmake --version
         ninja --version
 
@@ -48,7 +48,7 @@ jobs:
       if: startsWith(matrix.config.name, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install boost cmake ninja-build
+        sudo apt-get install libboost-all-dev cmake ninja-build
         cmake --version
         ninja --version
         gcc --version
@@ -56,6 +56,7 @@ jobs:
     - name: Install dependencies on macos
       if: startsWith(matrix.config.name, 'macos')
       run: |
+        brew install icu4c
         brew install boost cmake ninja
         cmake --version
         ninja --version
