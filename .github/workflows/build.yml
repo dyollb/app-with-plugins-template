@@ -48,7 +48,7 @@ jobs:
       if: startsWith(matrix.config.name, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install libboost-all-dev cmake ninja-build
+        sudo apt-get install libboost-filesystem-dev cmake ninja-build
         cmake --version
         ninja --version
         gcc --version
