@@ -74,7 +74,7 @@ jobs:
         ninja --version
 
     - name: configure
-      run: cmake -S src -B CIBuild -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
+      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
       env:
         BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
@@ -87,4 +87,4 @@ jobs:
         ctest -V -C Release
 
     - name: make install
-      run: cmake --build CIBuild --target INSTALL --config Release
+      run: cmake --build CIBuild --target install --config Release

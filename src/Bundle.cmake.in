@@ -1,23 +1,23 @@
 # Make sure this CMake has BundleUtilities.cmake:
 #
 if(NOT EXISTS "${CMAKE_ROOT}/Modules/BundleUtilities.cmake")
-  message(FATAL_ERROR "error: BundleUtilities.cmake not found. Use CMake 2.6.2 or later.")
+    message(FATAL_ERROR "error: BundleUtilities.cmake not found. Use CMake 2.6.2 or later.")
 endif(NOT EXISTS "${CMAKE_ROOT}/Modules/BundleUtilities.cmake")
 
 
 # Avoid following symlinks encountered during FILE GLOB_RECURSE calls:
 #
 if(COMMAND CMAKE_POLICY)
-  cmake_policy(SET CMP0009 NEW)
+    cmake_policy(SET CMP0009 NEW)
 
-  if(POLICY CMP0011)
-    cmake_policy(SET CMP0011 NEW)
-  endif(POLICY CMP0011)
+    if(POLICY CMP0011)
+        cmake_policy(SET CMP0011 NEW)
+    endif(POLICY CMP0011)
   
-  # Allow CMake to evaluate a boolean constant as an argument to if()
-  if(POLICY CMP0012)
-    cmake_policy(SET CMP0012 NEW)
-  endif(POLICY CMP0012)
+    # Allow CMake to evaluate a boolean constant as an argument to if()
+    if(POLICY CMP0012)
+        cmake_policy(SET CMP0012 NEW)
+    endif(POLICY CMP0012)
 endif(COMMAND CMAKE_POLICY)
 
 # Fixup the .app bundles in the install tree:
@@ -25,8 +25,20 @@ endif(COMMAND CMAKE_POLICY)
 set(BU_CHMOD_BUNDLE_ITEMS ON)
 include(BundleUtilities)
 
-fixup_bundle(
-  "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@@CMAKE_EXECUTABLE_SUFFIX@"
-  "@BUNDLE_PLUGINS@"
-  "@BUNDLE_LIB_DIRS@"
-)
+if(@APPLE@)
+
+    fixup_bundle(
+        "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@.app"
+        "@BUNDLE_PLUGINS@"
+        "@BUNDLE_LIB_DIRS@"
+    )
+
+else()
+
+    fixup_bundle(
+        "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@@CMAKE_EXECUTABLE_SUFFIX@"
+        "@BUNDLE_PLUGINS@"
+        "@BUNDLE_LIB_DIRS@"
+    )
+
+endif()
