@@ -85,3 +85,6 @@ jobs:
       run: |
         cd CIBuild
         ctest -V -C Release
+
+    - name: make install
+      run: cmake --build CIBuild --target INSTALL --config Release

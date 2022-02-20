@@ -24,22 +24,9 @@ endif(COMMAND CMAKE_POLICY)
 #
 set(BU_CHMOD_BUNDLE_ITEMS ON)
 include(BundleUtilities)
-  
-if(@APPLE@)
 
-    fixup_bundle(
-      "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bundle/myapp.app"
-      "@BUNDLE_PLUGINS@"
-      "@BUNDLE_LIB_DIRS@"
-    )
-
-else()
-
-    fixup_bundle(
-      "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/myapp@CMAKE_EXECUTABLE_SUFFIX@"
-      "@BUNDLE_PLUGINS@"
-      "@BUNDLE_LIB_DIRS@"
-    )
-
-endif()
-
+fixup_bundle(
+  "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@@CMAKE_EXECUTABLE_SUFFIX@"
+  "@BUNDLE_PLUGINS@"
+  "@BUNDLE_LIB_DIRS@"
+)

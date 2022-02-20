@@ -22,26 +22,6 @@ add_subdirectory(plugin)
 add_subdirectory(app)
 add_subdirectory(tests)
 
-install(TARGETS myapp ${PLUGIN_NAMES}
-    BUNDLE  DESTINATION bundle COMPONENT Runtime
-    LIBRARY DESTINATION bundle/myapp.app/Contents/Frameworks COMPONENT Runtime
-)
 
-set(BUNDLE_PLUGINS "")
-foreach(plugin ${PLUGIN_NAMES})
-    list(APPEND BUNDLE_PLUGINS 
-        ${CMAKE_INSTALL_PREFIX}/bundle/myapp.app/Contents/Frameworks/${CMAKE_SHARED_LIBRARY_PREFIX}${plugin}${CMAKE_SHARED_LIBRARY_SUFFIX}
-    )
-endforeach()
-
-set(BUNDLE_LIB_DIRS
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-    ${Boost_LIBRARY_DIRS}
-)
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/Bundle.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/Bundle.cmake
-    @ONLY
-)
-
-install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/Bundle.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Install.cmake)
+install_app(myapp ${PLUGIN_NAMES})
