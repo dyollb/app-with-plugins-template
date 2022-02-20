@@ -3,7 +3,7 @@ if(UNIX)
 endif()
 
 add_definitions(-DBOOST_TEST_DYN_LINK)
-add_executable(myapp WIN32 MACOSX_BUNDLE main.cpp PluginLoader.cpp)
+add_executable(myapp MACOSX_BUNDLE main.cpp PluginLoader.cpp)
 target_link_libraries(myapp core Boost::filesystem ${LIBS})
 
 # set runtime paths of libraries to relative path
