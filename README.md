@@ -14,3 +14,4 @@ References:
 - <https://github.com/RoysamLab/Farsight-toolkit/blob/7e9d6d15688735f34f7ca272e4e715acd11473ff/InstallRules/CompleteBundles.cmake.in>
 - <https://cliutils.gitlab.io/modern-cmake/chapters/install/installing.html>
 - <https://levelup.gitconnected.com/simple-modern-cmake-tutorial-part-2-285614d6a0ce>
+- <https://indico.cern.ch/event/848215/contributions/3591953/attachments/1923018/3181752/HSFPackagingRelocation.pdf>
