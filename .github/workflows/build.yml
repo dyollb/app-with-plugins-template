@@ -52,7 +52,7 @@ jobs:
       run: brew install boost
 
     - name: configure
-      run: cmake -S src -B CIBuild -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
+      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -G "${{ matrix.config.generators }}"
 
     - name: make
       run: cmake --build CIBuild -j2 --config Release
@@ -64,5 +64,4 @@ jobs:
 
     - name: make install
       run:  |
-        cd CIBuild
-        cmake --install CIInstall
+        cmake --build CIBuild --target install --config Release
