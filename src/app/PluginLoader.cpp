@@ -1,22 +1,18 @@
 #include "PluginLoader.h"
 
-#include <cstdlib>
-
-#include <fstream>
-#include <iomanip>
-#include <map>
-
+#include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/bind/bind.hpp>
-#include <boost/filesystem.hpp>
+
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <map>
 
 namespace fs = boost::filesystem;
 namespace algo = boost::algorithm;
-
-// STL
-#include <cstdio>
-#include <fstream>
-#include <iostream>
 
 //_________________________________________________________________//
 

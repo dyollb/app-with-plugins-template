@@ -17,71 +17,52 @@ jobs:
         - {
           name: "windows 2019",
           os: windows-2019,
-          generators: "Visual Studio 16 2019",
-          toolset: "msvc",
-          platform_version: "2019"
+          generators: "Visual Studio 16 2019"
           }
         - {
           name: "ubuntu-20.04",
           os: ubuntu-20.04,
           cc: "gcc",
           cxx: "g++",
-          generators: "Ninja",
-          toolset: "gcc",
-          platform_version: "20.04"
+          generators: "Unix Makefiles"
           }
         - {
           name: "macos-11",
           os: macos-11,
           cc: "clang",
           cxx: "clang++",
-          generators: "Ninja",
-          toolset: "clang",
-          platform_version: "11"
+          generators: "Unix Makefiles"
           }
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install boost
-      uses: MarkusJx/install-boost@v2.1.0
-      id: install-boost
-      with:
-        boost_version: 1.78.0
-        platform_version: ${{ matrix.config.platform_version }}
-        toolset: ${{ matrix.config.toolset }}
-
-    - name: Install build-kit on windows
+    - name: Install boost (windows)
       if: startsWith(matrix.config.name, 'windows')
-      run: |
-        choco install cmake
-        cmake --version
+      run: choco install boost-msvc-14.1
 
-    - name: Install build-kit on ubuntu
+    - name: Install boost (ubuntu)
       if: startsWith(matrix.config.name, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build
-        cmake --version
-        ninja --version
-        gcc --version
+        sudo apt-get install -y libboost-filesystem-dev
   
-    - name: Install build-kit on macos
+    - name: Install boost (macos)
       if: startsWith(matrix.config.name, 'macos')
-      run: |
-        brew install cmake ninja
-        cmake --version
-        ninja --version
+      run: brew install boost
 
     - name: configure
-      run: cmake -S src -B CIBuild -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
-      env:
-        BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -G "${{ matrix.config.generators }}"
 
     - name: make
       run: cmake --build CIBuild -j2 --config Release
 
     - name: make test
+      if: ${{  startsWith(matrix.config.name, 'ubuntu') ||  startsWith(matrix.config.name, 'macos') }}
       run: |
         cd CIBuild
         ctest -V -C Release
+
+    - name: make install
+      run:  |
+        cmake --build CIBuild --target install --config Release
