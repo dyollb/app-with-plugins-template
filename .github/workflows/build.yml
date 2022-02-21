@@ -58,6 +58,7 @@ jobs:
       run: cmake --build CIBuild -j2 --config Release
 
     - name: make test
+      if: ${{  startsWith(matrix.config.name, 'ubuntu') ||  startsWith(matrix.config.name, 'macos') }}
       run: |
         cd CIBuild
         ctest -V -C Release
