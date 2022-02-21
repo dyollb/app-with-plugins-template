@@ -59,7 +59,7 @@ jobs:
     - name: configure
       run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -G "${{ matrix.config.generators }}"
       env:
-        BOOST_ROOT: ${{ steps.boost.outputs.root }}"
+        BOOST_ROOT: "${{ steps.boost.outputs.root }}"
 
     - name: make
       run: cmake --build CIBuild -j2 --config Release
