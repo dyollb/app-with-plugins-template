@@ -25,20 +25,17 @@ endif(COMMAND CMAKE_POLICY)
 set(BU_CHMOD_BUNDLE_ITEMS ON)
 include(BundleUtilities)
 
+set(output_dir "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@")
+set(output_suffix @CMAKE_EXECUTABLE_SUFFIX@)
+
 if(@APPLE@)
-
-    fixup_bundle(
-        "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@.app"
-        "@BUNDLE_PLUGINS@"
-        "@BUNDLE_LIB_DIRS@"
-    )
-
-else()
-
-    fixup_bundle(
-        "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/@BUNDLE_DIR@/@APP_NAME@@CMAKE_EXECUTABLE_SUFFIX@"
-        "@BUNDLE_PLUGINS@"
-        "@BUNDLE_LIB_DIRS@"
-    )
-
+    set(output_suffix .app)
+elseif(@MSVC@)
+    set(output_dir "${output_dir}/$<CONFIG>")
 endif()
+
+fixup_bundle(
+    "${output_dir}/@APP_NAME@${output_suffix}"
+    "@BUNDLE_PLUGINS@"
+    "@BUNDLE_LIB_DIRS@"
+)
