@@ -1,7 +1,9 @@
 macro(install_app exe)
+cmake_parse_arguments(INSTALL_APP "" "" "PLUGIN_NAMES LIBRARY_DIRS" ${ARGN} )
 
 set(APP_NAME ${exe})
-set(PLUGIN_NAMES ${ARGN})
+set(PLUGIN_NAMES ${INSTALL_APP_PLUGIN_NAMES})
+set(BUNDLE_LIB_DIRS ${INSTALL_APP_LIBRARY_DIRS})
 
 set(BUNDLE_DIR "${APP_NAME}")
 set(LIBRARY_DIR ${BUNDLE_DIR})
@@ -22,10 +24,6 @@ foreach(plugin ${PLUGIN_NAMES})
     )
 endforeach()
 
-set(BUNDLE_LIB_DIRS
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-    ${Boost_LIBRARY_DIRS}
-)
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Bundle.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/Bundle.cmake
