@@ -26,7 +26,7 @@ jobs:
           os: ubuntu-20.04,
           cc: "gcc",
           cxx: "g++",
-          generators: "Ninja",
+          generators: "Unix Makefiles",
           toolset: "gcc",
           platform_version: "20.04"
           }
@@ -35,7 +35,7 @@ jobs:
           os: macos-11,
           cc: "clang",
           cxx: "clang++",
-          generators: "Ninja",
+          generators: "Unix Makefiles",
           toolset: "clang",
           platform_version: "11"
           }
@@ -51,30 +51,8 @@ jobs:
         platform_version: ${{ matrix.config.platform_version }}
         toolset: ${{ matrix.config.toolset }}
 
-    - name: Install build-kit on windows
-      if: startsWith(matrix.config.name, 'windows')
-      run: |
-        choco install cmake
-        cmake --version
-
-    - name: Install build-kit on ubuntu
-      if: startsWith(matrix.config.name, 'ubuntu')
-      run: |
-        sudo apt-get update
-        sudo apt-get install cmake ninja-build
-        cmake --version
-        ninja --version
-        gcc --version
-  
-    - name: Install build-kit on macos
-      if: startsWith(matrix.config.name, 'macos')
-      run: |
-        brew install cmake ninja
-        cmake --version
-        ninja --version
-
     - name: configure
-      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -G "${{ matrix.config.generators }}"
+      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -G "${{ matrix.config.generators }}"
       env:
         BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
