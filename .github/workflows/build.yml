@@ -57,7 +57,7 @@ jobs:
         toolset: ${{ matrix.config.toolset }}
 
     - name: configure
-      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT="${{ steps.boost.outputs.root }}" -G "${{ matrix.config.generators }}"
+      run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT="${{ steps.boost.outputs.root }}" -DBOOST_LIBRARYDIR="${{ steps.boost.outputs.librarydir }}" -G "${{ matrix.config.generators }}"
 
     - name: make
       run: cmake --build CIBuild -j2 --config Release
