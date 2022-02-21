@@ -17,48 +17,54 @@ jobs:
         - {
           name: "windows 2019",
           os: windows-2019,
-          generators: "Visual Studio 16 2019"
+          generators: "Visual Studio 16 2019",
+          toolset: "msvc"
           }
         - {
           name: "ubuntu-20.04",
           os: ubuntu-20.04,
           cc: "gcc",
           cxx: "g++",
-          generators: "Unix Makefiles"
+          generators: "Unix Makefiles",
+          toolset: "gcc"
           }
         - {
           name: "macos-11",
           os: macos-11,
           cc: "clang",
           cxx: "clang++",
-          generators: "Unix Makefiles"
+          generators: "Unix Makefiles",
+          toolset: "clang"
           }
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install boost (windows)
-      if: startsWith(matrix.config.name, 'windows')
-      run: choco install boost-msvc-14.1
+    - name: Cache Boost
+      uses: actions/cache@v2
+      with:
+        path: '${{ runner.workspace }}/boost_*.tar.gz'
+        key: 'boost-1.72.0'
 
-    - name: Install boost (ubuntu)
-      if: startsWith(matrix.config.name, 'ubuntu')
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libboost-filesystem-dev
-  
-    - name: Install boost (macos)
-      if: startsWith(matrix.config.name, 'macos')
-      run: brew install boost
+    - name: Build Boost
+      id: boost
+      uses: egor-tensin/build-boost@v1
+      with:
+        version: 1.72.0
+        libraries: filesystem
+        platform: x64
+        configuration: Release
+        toolset: ${{ matrix.config.toolset }}
 
     - name: configure
       run: cmake -S src -B CIBuild -DCMAKE_INSTALL_PREFIX=CIInstall -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -G "${{ matrix.config.generators }}"
+      env:
+        BOOST_ROOT: ${{ steps.boost.outputs.root }}"
 
     - name: make
       run: cmake --build CIBuild -j2 --config Release
 
     - name: make test
-      if: ${{  startsWith(matrix.config.name, 'ubuntu') ||  startsWith(matrix.config.name, 'macos') }}
       run: |
         cd CIBuild
         ctest -V -C Release
