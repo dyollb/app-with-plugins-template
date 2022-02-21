@@ -38,5 +38,5 @@ endif()
 fixup_bundle(
     "${output_dir}/@APP_NAME@${output_suffix}"
     "@BUNDLE_PLUGINS@"
-    "${library_build_dir} @BUNDLE_LIB_DIRS@"
+    "${library_build_dir};@BUNDLE_LIB_DIRS@"
 )
