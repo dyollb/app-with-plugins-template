@@ -40,13 +40,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache Boost
+    - name: cache Boost
       uses: actions/cache@v2
       with:
         path: '${{ runner.workspace }}/boost_*.tar.gz'
         key: 'boost-1.72.0'
 
-    - name: Build Boost
+    - name: build Boost
       id: boost
       uses: egor-tensin/build-boost@v1
       with:
