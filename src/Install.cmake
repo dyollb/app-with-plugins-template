@@ -1,10 +1,12 @@
 macro(install_app exe)
-cmake_parse_arguments(INSTALL_APP "" "" "PLUGIN_NAMES LIBRARY_DIRS" ${ARGN} )
+set(options JUNK1)
+set(oneValueArgs JUNK2)
+set(multiValueArgs PLUGIN_NAMES LIBRARY_DIRS)
+cmake_parse_arguments(INSTALL_APP "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 set(APP_NAME ${exe})
 set(PLUGIN_NAMES ${INSTALL_APP_PLUGIN_NAMES})
 set(BUNDLE_LIB_DIRS ${INSTALL_APP_LIBRARY_DIRS})
-
 set(BUNDLE_DIR "${APP_NAME}")
 set(LIBRARY_DIR ${BUNDLE_DIR})
 if(APPLE)
